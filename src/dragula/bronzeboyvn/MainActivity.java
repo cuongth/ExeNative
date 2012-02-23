@@ -11,7 +11,6 @@ import java.io.OutputStream;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -51,7 +50,6 @@ public class MainActivity extends Activity {
     					}
     					output("Executing...");
     					String output = exec(LOCAL + "hello");
-    					Log.e("out", output);
     					output(output);
             		}
             	});
