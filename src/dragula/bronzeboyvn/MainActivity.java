@@ -22,9 +22,9 @@ public class MainActivity extends Activity {
 		"/data/data/dragula.bronzeboyvn/";
 	
 	// Keep these three constants in sync
-	private static final String COMMAND_NAME = "hello";
-	private static final String COMMAND_ARGS = "";
-	private static final int COMMAND_BINARY = R.raw.hello;
+	private static final String COMMAND_NAME = "ffmpeg";
+	private static final String COMMAND_ARGS = "-version";
+	private static final int COMMAND_BINARY = R.raw.ffmpeg;
 	
 	private TextView outputText;
     private Button lsButton;
