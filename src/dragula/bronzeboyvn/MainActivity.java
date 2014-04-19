@@ -11,17 +11,26 @@ import java.io.OutputStream;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
+    private static final String TAG = MainActivity.class.getSimpleName();
 	private static final String LOCAL =
 		"/data/data/dragula.bronzeboyvn/";
+	
+	// Keep these three constants in sync
+	private static final String COMMAND_NAME = "hello";
+	private static final String COMMAND_ARGS = "";
+	private static final int COMMAND_BINARY = R.raw.hello;
+	
 	private TextView outputText;
     private Button lsButton;
     private Handler handler = new Handler();
-    private Button helloButton;
+    private TextView commandText;
+    private Button commandButton;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,20 +45,22 @@ public class MainActivity extends Activity {
             	output(output);
             }
         });
-        helloButton = (Button)findViewById(R.id.helloButton);
-        helloButton.setOnClickListener(new View.OnClickListener() {
+        commandText = (TextView)findViewById(R.id.helloText);
+        commandText.setText("your binary: " + COMMAND_NAME + " " + COMMAND_ARGS);
+        commandButton = (Button)findViewById(R.id.helloButton);
+        commandButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	output("Loading...");
             	Thread thread = new Thread(new Runnable() {
             		public void run() {
             			try {
     						saveRawToFile();
-    						exec("/system/bin/chmod 744 " + LOCAL + "hello");
+    						exec("/system/bin/chmod 744 " + LOCAL + COMMAND_NAME);
     					} catch (IOException e) {
     						e.printStackTrace();
     					}
     					output("Executing...");
-    					String output = exec(LOCAL + "hello");
+    					String output = exec(LOCAL + COMMAND_NAME + " " + COMMAND_ARGS);
     					output(output);
             		}
             	});
@@ -59,9 +70,9 @@ public class MainActivity extends Activity {
     }
     
     private void saveRawToFile() throws IOException {
-		File file = new File(LOCAL, "hello");
+        File file = new File(LOCAL, COMMAND_NAME);
 		if (!file.exists()) {
-			InputStream input = getResources().openRawResource(R.raw.hello);
+			InputStream input = getResources().openRawResource(COMMAND_BINARY);
 			OutputStream output = new FileOutputStream(file);
 	
 			byte[] buffer = new byte[1024 * 4];
@@ -96,6 +107,7 @@ public class MainActivity extends Activity {
     }
 
 	private void output(final String str) {
+	    Log.i(TAG, str);
         handler.post(new Runnable() {
         	public void run() {
         		outputText.setText(str);
