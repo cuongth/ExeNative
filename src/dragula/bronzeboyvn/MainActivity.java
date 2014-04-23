@@ -19,8 +19,7 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
     private static final String TAG = MainActivity.class.getSimpleName();
-	private static final String LOCAL = Environment.getExternalStorageDirectory().getAbsolutePath() +
-		"/TalkingShitSounds/";
+	private static final String LOCAL = "/data/data/dragula.bronzeboyvn/";
 	
 	// Keep these three constants in sync
 	private static final String COMMAND_NAME = "ffmpeg";
@@ -46,7 +45,7 @@ public class MainActivity extends Activity {
         lsButton = (Button)findViewById(R.id.lsButton);
         lsButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	String output = exec("/system/bin/ls");
+            	String output = exec("/system/bin/ls /data/data/dragula.bronzeboyvn");
             	output(output);
             }
         });
