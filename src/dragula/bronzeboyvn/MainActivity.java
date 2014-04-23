@@ -23,7 +23,9 @@ public class MainActivity extends Activity {
 	
 	// Keep these three constants in sync
 	private static final String COMMAND_NAME = "ffmpeg";
-	private static final String COMMAND_ARGS = "-version";
+	private static final String COMMAND_ARGS = "-f s16le -ar 22.05k -ac 1 -i ";
+	private static final String COMMAND_IN = " testsound.raw ";
+	private static final String COMMAND_OUT = " output.wav";
 	private static final int COMMAND_BINARY = R.raw.ffmpeg;
 	
 	private TextView outputText;
@@ -46,7 +48,7 @@ public class MainActivity extends Activity {
             }
         });
         commandText = (TextView)findViewById(R.id.helloText);
-        commandText.setText("your binary: " + COMMAND_NAME + " " + COMMAND_ARGS);
+        commandText.setText("Your binary:" + COMMAND_NAME + " " + COMMAND_ARGS + COMMAND_IN + COMMAND_OUT);
         commandButton = (Button)findViewById(R.id.helloButton);
         commandButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -60,7 +62,7 @@ public class MainActivity extends Activity {
     						e.printStackTrace();
     					}
     					output("Executing...");
-    					String output = exec(LOCAL + COMMAND_NAME + " " + COMMAND_ARGS);
+    					String output = exec(LOCAL + COMMAND_NAME + " " + COMMAND_ARGS + COMMAND_IN + COMMAND_OUT);
     					output(output);
             		}
             	});
