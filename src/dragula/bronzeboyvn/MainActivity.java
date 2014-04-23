@@ -10,6 +10,7 @@ import java.io.OutputStream;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
@@ -18,15 +19,17 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
     private static final String TAG = MainActivity.class.getSimpleName();
-	private static final String LOCAL =
-		"/data/data/dragula.bronzeboyvn/";
+	private static final String LOCAL = Environment.getExternalStorageDirectory().getAbsolutePath() +
+		"/TalkingShitSounds/";
 	
 	// Keep these three constants in sync
 	private static final String COMMAND_NAME = "ffmpeg";
-	private static final String COMMAND_ARGS = "-f s16le -ar 22.05k -ac 1 -i ";
-	private static final String COMMAND_IN = " testsound.raw ";
-	private static final String COMMAND_OUT = " output.wav";
+	private static final String COMMAND_ARGS = "-f s16le -ar 22.05k -ac 1 -i";	
+	private static final String COMMAND_OUT = "output.wav";
+	private static final String COMMAND_IN = "testsound.raw";
+	private static final int SONG = R.raw.testsound;
 	private static final int COMMAND_BINARY = R.raw.ffmpeg;
+
 	
 	private TextView outputText;
     private Button lsButton;
@@ -48,7 +51,7 @@ public class MainActivity extends Activity {
             }
         });
         commandText = (TextView)findViewById(R.id.helloText);
-        commandText.setText("Your binary:" + COMMAND_NAME + " " + COMMAND_ARGS + COMMAND_IN + COMMAND_OUT);
+        commandText.setText("Your binary:" + COMMAND_NAME + " " + COMMAND_ARGS + " " + COMMAND_IN + " " + COMMAND_OUT);
         commandButton = (Button)findViewById(R.id.helloButton);
         commandButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -56,13 +59,14 @@ public class MainActivity extends Activity {
             	Thread thread = new Thread(new Runnable() {
             		public void run() {
             			try {
-    						saveRawToFile();
+    						saveRawToFile(COMMAND_BINARY,COMMAND_NAME);
     						exec("/system/bin/chmod 744 " + LOCAL + COMMAND_NAME);
+    						saveRawToFile(SONG, COMMAND_IN);
     					} catch (IOException e) {
     						e.printStackTrace();
     					}
     					output("Executing...");
-    					String output = exec(LOCAL + COMMAND_NAME + " " + COMMAND_ARGS + COMMAND_IN + COMMAND_OUT);
+    					String output = exec(LOCAL + COMMAND_NAME + " " + COMMAND_ARGS + " " + COMMAND_IN + " " + COMMAND_OUT);
     					output(output);
             		}
             	});
@@ -71,10 +75,10 @@ public class MainActivity extends Activity {
     	});
     }
     
-    private void saveRawToFile() throws IOException {
-        File file = new File(LOCAL, COMMAND_NAME);
+    private void saveRawToFile(int convert, String name) throws IOException {
+        File file = new File(LOCAL, name);
 		if (!file.exists()) {
-			InputStream input = getResources().openRawResource(COMMAND_BINARY);
+			InputStream input = getResources().openRawResource(convert);
 			OutputStream output = new FileOutputStream(file);
 	
 			byte[] buffer = new byte[1024 * 4];
@@ -107,6 +111,7 @@ public class MainActivity extends Activity {
             throw new RuntimeException(e);
         }
     }
+	
 
 	private void output(final String str) {
 	    Log.i(TAG, str);
